@@ -72,4 +72,31 @@ class SpotifyPlayer:
         duration = self.format_time(track['duration_ms'])
         status = " ▶️  Playing" if track['is_playing'] else " ⏸️  Paused"
         
-        return f"{status}: {track['name']} - {track['artist']} [{progress}/{duration}]" 
+        return f"{status}: {track['name']} - {track['artist']} [{progress}/{duration}]"
+    
+    def resume_playback(self):
+        """Resume playback if it's paused."""
+        try:
+            playback = self.get_current_playback()
+            if playback and not playback['is_playing']:
+                self.sp.start_playback()
+                return True
+            return False  # Already playing
+        except Exception as e:
+            print(f"Error resuming: {e}")
+            return False
+            
+    def seek_to_position_and_play(self, position_ms):
+        """Seek to a specific position and ensure playback is active."""
+        try:
+            # First seek to the position
+            success = self.seek_to_position(position_ms)
+            if not success:
+                return False
+                
+            # Then make sure playback is active
+            self.resume_playback()
+            return True
+        except Exception as e:
+            print(f"Error seeking and playing: {e}")
+            return False 

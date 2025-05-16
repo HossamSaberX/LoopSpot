@@ -177,6 +177,15 @@ class LoopController:
             print("Loop is already active.")
             return True
         
+        # If track is paused, start at point A and resume playback
+        if not track['is_playing']:
+            print(f"Track is paused. Seeking to point A and resuming playback.")
+            self.player.seek_to_position_and_play(self.point_a)
+        # If track is already playing but outside loop range, seek to point A
+        elif track['progress_ms'] < self.point_a or track['progress_ms'] >= self.point_b:
+            print(f"Playback outside loop range. Seeking to point A.")
+            self.player.seek_to_position(self.point_a)
+        
         # Start the loop thread
         self.active = True
         self.stop_event.clear()
@@ -232,6 +241,12 @@ class LoopController:
                     self.active = False
                     break
                 
+                # Check if track is paused
+                if not track['is_playing']:
+                    # Don't do anything while paused, just keep checking
+                    time.sleep(0.5)
+                    continue
+                
                 # Check playback position
                 position = track['progress_ms']
                 
@@ -239,7 +254,7 @@ class LoopController:
                 if position < self.point_a or position >= self.point_b:
                     # If it's before point A or after/at point B, jump back to point A
                     print(f"Playback outside loop range. Returning to {self.player.format_time(self.point_a)}")
-                    self.player.seek_to_position(self.point_a)
+                    self.player.seek_to_position_and_play(self.point_a)
                     
                     # Give the seek a moment to take effect
                     time.sleep(0.5)
