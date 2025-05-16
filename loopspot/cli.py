@@ -235,6 +235,36 @@ class LoopSpotCLI:
             print("Invalid input.")
             time.sleep(1)
     
+    def set_point_a(self):
+        """Set point A at current position with confirmation if already set."""
+        # Check if points are already set
+        if self.loop_controller.point_a is not None:
+            current_a = self.player.format_time(self.loop_controller.point_a)
+            print(f"Point A is currently set at {current_a}")
+            confirm = input("Do you want to change it? (y/n): ").strip().lower()
+            if confirm != 'y':
+                print("Operation cancelled.")
+                time.sleep(1)
+                return
+        
+        # Set point A
+        self.loop_controller.set_point_a()
+    
+    def set_point_b(self):
+        """Set point B at current position with confirmation if already set."""
+        # Check if point B is already set
+        if self.loop_controller.point_b is not None:
+            current_b = self.player.format_time(self.loop_controller.point_b)
+            print(f"Point B is currently set at {current_b}")
+            confirm = input("Do you want to change it? (y/n): ").strip().lower()
+            if confirm != 'y':
+                print("Operation cancelled.")
+                time.sleep(1)
+                return
+        
+        # Set point B
+        self.loop_controller.set_point_b()
+    
     def set_point_a_manual(self):
         """Set point A with a manually entered timestamp."""
         track = self.player.get_current_track()
@@ -243,10 +273,18 @@ class LoopSpotCLI:
             time.sleep(1)
             return
         
+        # Check if point A is already set
+        if self.loop_controller.point_a is not None:
+            current_a = self.player.format_time(self.loop_controller.point_a)
+            print(f"Point A is currently set at {current_a}")
+            confirm = input("Do you want to change it? (y/n): ").strip().lower()
+            if confirm != 'y':
+                print("Operation cancelled.")
+                time.sleep(1)
+                return
+        
         print(f"\nCurrent track: {track['name']} - {track['artist']}")
         print(f"Track duration: {self.player.format_time(track['duration_ms'])}")
-        if self.loop_controller.point_a is not None:
-            print(f"Current point A: {self.player.format_time(self.loop_controller.point_a)}")
         
         timestamp = input("\nEnter point A timestamp (mm:ss format): ")
         self.loop_controller.set_point_a_timestamp(timestamp)
@@ -265,11 +303,19 @@ class LoopSpotCLI:
             time.sleep(1)
             return
         
+        # Check if point B is already set
+        if self.loop_controller.point_b is not None:
+            current_b = self.player.format_time(self.loop_controller.point_b)
+            print(f"Point B is currently set at {current_b}")
+            confirm = input("Do you want to change it? (y/n): ").strip().lower()
+            if confirm != 'y':
+                print("Operation cancelled.")
+                time.sleep(1)
+                return
+        
         print(f"\nCurrent track: {track['name']} - {track['artist']}")
         print(f"Track duration: {self.player.format_time(track['duration_ms'])}")
         print(f"Point A: {self.player.format_time(self.loop_controller.point_a)}")
-        if self.loop_controller.point_b is not None:
-            print(f"Current point B: {self.player.format_time(self.loop_controller.point_b)}")
         
         timestamp = input("\nEnter point B timestamp (mm:ss format): ")
         self.loop_controller.set_point_b_timestamp(timestamp)
@@ -278,9 +324,9 @@ class LoopSpotCLI:
     def process_command(self, command):
         """Process a user command."""
         if command == '1':  # Set point A (current)
-            self.loop_controller.set_point_a()
+            self.set_point_a()
         elif command == '2':  # Set point B (current)
-            self.loop_controller.set_point_b()
+            self.set_point_b()
         elif command == '3':  # Set point A (manual)
             self.set_point_a_manual()
         elif command == '4':  # Set point B (manual)

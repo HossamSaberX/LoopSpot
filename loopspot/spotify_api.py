@@ -70,6 +70,6 @@ class SpotifyPlayer:
         
         progress = self.format_time(track['progress_ms'])
         duration = self.format_time(track['duration_ms'])
-        status = " ▶️  Playing" if track['is_playing'] else " ⏸️ Paused"
+        status = " ▶️  Playing" if track['is_playing'] else " ⏸️  Paused"
         
         return f"{status}: {track['name']} - {track['artist']} [{progress}/{duration}]" 
