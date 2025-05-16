@@ -1,0 +1,113 @@
+name: Build LoopSpot Executables
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Run workflow on version tags, e.g. v1.0.0
+  pull_request:
+    branches: [ main, master ]  # Run workflow on PRs to main/master
+  workflow_dispatch:  # Enable manual trigger button in GitHub UI
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+          pip install -r requirements.txt
+
+      - name: Build with PyInstaller
+        run: |
+          pyinstaller --onefile --name loopspot-linux --icon=Looper.png run.py
+          
+      - name: Upload Linux build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: loopspot-linux
+          path: dist/loopspot-linux
+          
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+          pip install -r requirements.txt
+
+      - name: Build with PyInstaller
+        run: |
+          pyinstaller --onefile --name loopspot-windows --icon=Looper.png run.py
+          
+      - name: Upload Windows build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: loopspot-windows
+          path: dist/loopspot-windows.exe
+          
+  create-release:
+    needs: [build-linux, build-windows]
+    if: startsWith(github.ref, 'refs/tags/')  # Only run on tag pushes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # We need full history for changelog
+          
+      - name: Generate changelog
+        id: changelog
+        run: |
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          if [ -z "$PREVIOUS_TAG" ]; then
+            git log --pretty=format:"* %s" > CHANGELOG.md
+          else
+            git log --pretty=format:"* %s" ${PREVIOUS_TAG}..HEAD > CHANGELOG.md
+          fi
+          
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: loopspot-linux
+          path: dist
+          
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: loopspot-windows
+          path: dist
+          
+      - name: Make Linux executable
+        run: chmod +x dist/loopspot-linux
+          
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/loopspot-linux
+            dist/loopspot-windows.exe
+          body_path: CHANGELOG.md
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 

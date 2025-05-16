@@ -107,3 +107,31 @@ You can reset your credentials at any time using option 12 in the menu.
 - Loop accuracy may vary depending on network conditions
 - You must have an active Spotify playback session on any device
 - The HTTP server uses port 8888 for the OAuth callback 
+
+## Releases & Executable Builds
+
+LoopSpot uses GitHub Actions to automatically build executables for Windows and Linux. These executables are attached to GitHub releases when a new version tag is pushed.
+
+### Downloading Executables
+
+1. Go to the [Releases](https://github.com/yourusername/loopspot/releases) page
+2. Download the appropriate executable for your platform:
+   - `loopspot-windows.exe` for Windows
+   - `loopspot-linux` for Linux
+
+### Triggering New Builds
+
+For repository maintainers:
+
+1. Make your changes and commit them
+2. Tag the commit with a version number:
+   ```
+   git tag v1.0.0
+   git push origin v1.0.0
+   ```
+3. The GitHub Action will automatically:
+   - Build executables for Windows and Linux
+   - Create a new release with these executables
+   - Generate release notes from commit messages
+
+You can also manually trigger builds from the GitHub Actions tab by using the "workflow_dispatch" trigger. 
