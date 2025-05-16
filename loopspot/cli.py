@@ -52,7 +52,7 @@ class LoopSpotCLI:
         """Print the application header."""
         clear_screen()
         print("=" * 60)
-        print("LoopSpot - Spotify AB Looper (CLI Version)")
+        print("LoopSpot - Spotify AB Looper")
         print("=" * 60)
     
     def print_current_track(self):
@@ -126,10 +126,10 @@ class LoopSpotCLI:
         print("\nOther Tracks:")
         other_tracks = [track for track in all_loops if not (current_track and track['track_id'] == current_track['id'])]
         
-        for track in other_tracks:
-            print(f"\n{track['track_name']} - {track['artist']}")
-            for i, loop in enumerate(track['loops']):
-                print(f"  {i+1}. {loop['name']}: {self.player.format_time(loop['point_a'])} - {self.player.format_time(loop['point_b'])}")
+        for i, track in enumerate(other_tracks):
+            print(f"\n{i+1}. {track['track_name']} - {track['artist']}")
+            for j, loop in enumerate(track['loops']):
+                print(f"    {j+1}. {loop['name']}: {self.player.format_time(loop['point_a'])} - {self.player.format_time(loop['point_b'])}")
         
         input("\nPress Enter to continue...")
     
@@ -164,40 +164,107 @@ class LoopSpotCLI:
         time.sleep(1)
     
     def load_saved_loop(self):
-        """Load a saved loop for the current track."""
-        track = self.player.get_current_track()
-        if not track:
-            print("No track is currently playing.")
-            time.sleep(1)
-            return
+        """Load a saved loop for the current track or play a different track."""
+        all_loops = self.storage.get_all_loops()
         
-        loops = self.storage.get_loops_for_track(track['id'])
-        if not loops:
-            print("No saved loops for the current track.")
+        if not all_loops:
+            print("No saved loops found.")
             time.sleep(1)
             return
         
         clear_screen()
-        print(f"Saved Loops for: {track['name']} - {track['artist']}")
+        print("Load Loop:")
         print("=" * 60)
         
-        for i, loop in enumerate(loops):
-            print(f"{i+1}. {loop['name']}: {self.player.format_time(loop['point_a'])} - {self.player.format_time(loop['point_b'])}")
+        # Get current track info
+        current_track = self.player.get_current_track()
+        current_track_loops = None
+        other_tracks = []
         
+        # Separate current track and other tracks
+        if current_track:
+            for track in all_loops:
+                if track['track_id'] == current_track['id']:
+                    current_track_loops = track
+                else:
+                    other_tracks.append(track)
+        else:
+            other_tracks = all_loops
+        
+        # Display current track loops if any
+        track_selection = []
+        
+        if current_track_loops:
+            print(f"\nCurrent Track: {current_track_loops['track_name']} - {current_track_loops['artist']}")
+            for i, loop in enumerate(current_track_loops['loops']):
+                print(f"  {i+1}. {loop['name']}: {self.player.format_time(loop['point_a'])} - {self.player.format_time(loop['point_b'])}")
+            track_selection.append(current_track_loops)
+        
+        # Display other tracks
+        if other_tracks:
+            print("\nOther Tracks:")
+            for i, track in enumerate(other_tracks):
+                # If current track exists, we offset the numbering
+                display_num = i+1 if not current_track_loops else i+2
+                print(f"{display_num}. {track['track_name']} - {track['artist']}")
+                for j, loop in enumerate(track['loops']):
+                    print(f"    {j+1}. {loop['name']}: {self.player.format_time(loop['point_a'])} - {self.player.format_time(loop['point_b'])}")
+                track_selection.append(track)
+        
+        # Get track selection
         try:
-            choice = int(input("\nEnter loop number to load (0 to cancel): "))
-            if choice == 0:
+            track_choice = int(input("\nSelect track number (0 to cancel): "))
+            if track_choice == 0:
                 return
             
-            if 1 <= choice <= len(loops):
-                loop_data = {
-                    'track_id': track['id'],
-                    'point_a': loops[choice-1]['point_a'],
-                    'point_b': loops[choice-1]['point_b']
-                }
-                self.loop_controller.load_loop(loop_data)
+            if 1 <= track_choice <= len(track_selection):
+                selected_track = track_selection[track_choice-1]
+                
+                # Display loops for selected track
+                print(f"\nLoops for: {selected_track['track_name']} - {selected_track['artist']}")
+                for i, loop in enumerate(selected_track['loops']):
+                    print(f"  {i+1}. {loop['name']}: {self.player.format_time(loop['point_a'])} - {self.player.format_time(loop['point_b'])}")
+                
+                # Get loop selection
+                loop_choice = int(input("\nSelect loop number (0 to cancel): "))
+                if loop_choice == 0:
+                    return
+                
+                if 1 <= loop_choice <= len(selected_track['loops']):
+                    selected_loop = selected_track['loops'][loop_choice-1]
+                    
+                    # Check if we need to switch tracks
+                    if current_track is None or selected_track['track_id'] != current_track['id']:
+                        print(f"\nChanging track to: {selected_track['track_name']} - {selected_track['artist']}")
+                        if not self.player.play_track(selected_track['track_id']):
+                            print("Failed to play track. Please check your Spotify playback.")
+                            time.sleep(2)
+                            return
+                        
+                        # Wait for track to load
+                        print("Waiting for track to load...")
+                        time.sleep(2)
+                    
+                    # Now load the loop
+                    loop_data = {
+                        'track_id': selected_track['track_id'],
+                        'point_a': selected_loop['point_a'],
+                        'point_b': selected_loop['point_b']
+                    }
+                    
+                    if self.loop_controller.load_loop(loop_data):
+                        print(f"Loop '{selected_loop['name']}' loaded successfully.")
+                        # Automatically start the loop
+                        self.loop_controller.start_loop()
+                    else:
+                        print("Failed to load loop.")
+                    
+                    time.sleep(1)
+                else:
+                    print("Invalid loop selection.")
+                    time.sleep(1)
             else:
-                print("Invalid selection.")
+                print("Invalid track selection.")
                 time.sleep(1)
         except ValueError:
             print("Invalid input.")

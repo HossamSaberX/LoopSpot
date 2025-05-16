@@ -74,6 +74,17 @@ class SpotifyPlayer:
         
         return f"{status}: {track['name']} - {track['artist']} [{progress}/{duration}]"
     
+    def play_track(self, track_uri):
+        """Play a specific track."""
+        try:
+            self.sp.start_playback(uris=[f"spotify:track:{track_uri}"])
+            # Wait a short time for playback to start
+            time.sleep(0.5)
+            return True
+        except Exception as e:
+            print(f"Error playing track: {e}")
+            return False
+    
     def resume_playback(self):
         """Resume playback if it's paused."""
         try:
