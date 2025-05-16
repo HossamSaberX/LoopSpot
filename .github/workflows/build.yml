@@ -32,7 +32,7 @@ jobs:
           pyinstaller --onefile --name loopspot-linux --icon=Looper.png run.py
           
       - name: Upload Linux build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: loopspot-linux
           path: dist/loopspot-linux
@@ -60,7 +60,7 @@ jobs:
           pyinstaller --onefile --name loopspot-windows --icon=Looper.png run.py
           
       - name: Upload Windows build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: loopspot-windows
           path: dist/loopspot-windows.exe
@@ -86,13 +86,13 @@ jobs:
           fi
           
       - name: Download Linux artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: loopspot-linux
           path: dist
           
       - name: Download Windows artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: loopspot-windows
           path: dist
