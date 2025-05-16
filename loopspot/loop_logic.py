@@ -13,6 +13,11 @@ class LoopController:
         self.active = False
         self.loop_thread = None
         self.stop_event = threading.Event()
+        self.ui_refresh_callback = None  # Callback for UI refresh
+    
+    def set_ui_refresh_callback(self, callback):
+        """Set callback function to refresh UI after seeking."""
+        self.ui_refresh_callback = callback
     
     def set_point_a(self):
         """Set point A to the current playback position."""
@@ -235,6 +240,13 @@ class LoopController:
                     # If it's before point A or after/at point B, jump back to point A
                     print(f"Playback outside loop range. Returning to {self.player.format_time(self.point_a)}")
                     self.player.seek_to_position(self.point_a)
+                    
+                    # Give the seek a moment to take effect
+                    time.sleep(0.5)
+                    
+                    # Call UI refresh callback if set
+                    if self.ui_refresh_callback:
+                        self.ui_refresh_callback()
                 
                 # Sleep for a short time to avoid excessive API calls
                 time.sleep(0.3)

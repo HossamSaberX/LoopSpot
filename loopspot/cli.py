@@ -33,7 +33,20 @@ class LoopSpotCLI:
         
         self.player = SpotifyPlayer(self.sp)
         self.loop_controller = LoopController(self.player)
+        
+        # Set UI refresh callback
+        self.loop_controller.set_ui_refresh_callback(self.refresh_ui)
+        
         return True
+    
+    def refresh_ui(self):
+        """Refresh the UI after loop monitor actions."""
+        # Clear the screen and redraw the UI
+        clear_screen()
+        self.print_header()
+        self.print_current_track()
+        self.print_menu()
+        sys.stdout.flush()  # Ensure output is displayed
     
     def print_header(self):
         """Print the application header."""
