@@ -9,6 +9,7 @@ A proof-of-concept command-line application that allows setting A/B loop points 
 - Automatically loop between points A and B during playback
 - Save and load loop points for your favorite tracks
 - Simple command-line interface
+- User-provided Spotify API credentials
 
 ## Requirements
 
@@ -30,28 +31,36 @@ A proof-of-concept command-line application that allows setting A/B loop points 
    pip install -r requirements.txt
    ```
 
-3. Set up your Spotify Client Secret:
+3. Run the application:
    ```
-   export SPOTIPY_CLIENT_SECRET='your_client_secret_from_spotify_dashboard'
+   python run.py
    ```
-   
-   You can get your client secret from the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard):
-   - Go to your LoopSpot application
-   - Copy the "Client Secret" value
-   - For Windows, use `set SPOTIPY_CLIENT_SECRET=your_secret` instead
-   
-4. Configure your Spotify app:
-   - Go to your [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
-   - Select your LoopSpot application
-   - Click "Edit Settings"
-   - Add `http://127.0.0.1:8888/` to the Redirect URIs section
-   - Save changes
+
+4. First-time setup:
+   - You'll be guided through the process of setting up your Spotify Developer credentials
+   - Follow the on-screen instructions to create a Spotify application
+   - Enter your Client ID and Client Secret when prompted
+
+## Setting up Spotify Developer Credentials
+
+When you first run LoopSpot, you'll need to set up your own Spotify Developer credentials:
+
+1. Go to the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard) and log in
+2. Click "Create app"
+3. Fill in the required fields:
+   - App name: "LoopSpot" (or any name you prefer)
+   - App description: "A/B loop controller for Spotify"
+   - Redirect URI: `http://127.0.0.1:8888/`
+   - Select appropriate API scopes
+4. Accept the terms and conditions and create the app
+5. Copy the Client ID and Client Secret from your app's dashboard
+6. Enter these values when prompted by LoopSpot
 
 ## Usage
 
 1. Run the application:
    ```
-   python run_loopspot.py
+   python run.py
    ```
 
 2. Authenticate with your Spotify account when prompted.
@@ -80,7 +89,17 @@ LoopSpot monitors your Spotify playback position in real-time. When the playback
 - **9**: Load a saved loop
 - **10**: Delete a saved loop
 - **11**: Refresh current track
+- **12**: Reset Spotify credentials
 - **0**: Exit
+
+## Data Storage
+
+LoopSpot stores two types of data:
+- **Spotify Credentials**: Stored in `data/spotify_credentials.json`
+- **Access Tokens**: Stored in `data/spotify_token.json`
+- **Loop Points**: Stored in `data/loop_points.json`
+
+You can reset your credentials at any time using option 12 in the menu.
 
 ## Notes
 

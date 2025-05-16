@@ -6,13 +6,15 @@ from urllib.parse import urlparse, parse_qs
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
-# Constants
-CLIENT_ID = "feab870bd2f048a6baf7ad087f97546b"
-# You should replace this with your actual client secret from the Spotify Dashboard
-CLIENT_SECRET = os.environ.get("SPOTIPY_CLIENT_SECRET", "")  # Get secret from environment variable
-REDIRECT_URI = "http://127.0.0.1:8888/"
-SCOPE = "user-read-playback-state user-modify-playback-state user-read-currently-playing"
-TOKEN_PATH = "data/spotify_token.json"
+# Paths
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+CREDENTIALS_PATH = os.path.join(DATA_DIR, "spotify_credentials.json")
+TOKEN_PATH = os.path.join(DATA_DIR, "spotify_token.json")
+
+# Default redirect URI and scope
+DEFAULT_REDIRECT_URI = "http://127.0.0.1:8888/"
+DEFAULT_SCOPE = "user-read-playback-state user-modify-playback-state user-read-currently-playing"
 
 class AuthCallbackHandler(BaseHTTPRequestHandler):
     """Handler for OAuth callback."""
@@ -43,29 +45,77 @@ class AuthCallbackHandler(BaseHTTPRequestHandler):
 class SpotifyAuth:
     """Handle Spotify authentication."""
     
-    def __init__(self, client_id=CLIENT_ID, client_secret=CLIENT_SECRET, cache_dir="data"):
+    def __init__(self, cache_dir="data"):
         """Initialize the auth manager."""
-        os.makedirs(cache_dir, exist_ok=True)
-        self.token_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), TOKEN_PATH)
+        os.makedirs(DATA_DIR, exist_ok=True)
+        self.credentials_path = CREDENTIALS_PATH
+        self.token_path = TOKEN_PATH
         
-        if not client_secret:
-            print("ERROR: No client secret provided. Set the SPOTIPY_CLIENT_SECRET environment variable.")
-            print("You can get your client secret from the Spotify Developer Dashboard.")
-            print("Instructions:")
-            print("1. Go to https://developer.spotify.com/dashboard")
-            print("2. Open your LoopSpot application")
-            print("3. Copy the 'Client Secret'")
-            print("4. Run this command before starting LoopSpot:")
-            print("   export SPOTIPY_CLIENT_SECRET='your_client_secret_here'")
+        # Get or create credentials
+        self.credentials = self._get_or_create_credentials()
         
         self.sp_oauth = SpotifyOAuth(
-            client_id=client_id,
-            client_secret=client_secret,
-            redirect_uri=REDIRECT_URI,
-            scope=SCOPE,
+            client_id=self.credentials["client_id"],
+            client_secret=self.credentials["client_secret"],
+            redirect_uri=self.credentials["redirect_uri"],
+            scope=self.credentials["scope"],
             cache_path=self.token_path
         )
         
+    def _get_or_create_credentials(self):
+        """Get credentials from file or prompt user to enter them."""
+        credentials = self._load_credentials()
+        
+        # If credentials are empty or incomplete, prompt user to enter them
+        if not credentials or not credentials.get("client_id") or not credentials.get("client_secret"):
+            print("\n=== Spotify API Credentials Setup ===")
+            print("You need to create a Spotify Developer application to use LoopSpot.")
+            print("Follow these steps:")
+            print("1. Go to https://developer.spotify.com/dashboard")
+            print("2. Log in with your Spotify account")
+            print("3. Click 'Create app'")
+            print("4. Fill in the app details (name, description, etc.)")
+            print("5. Set the redirect URI to: http://127.0.0.1:8888/")
+            print("6. Accept the terms and create the app")
+            print("7. Copy the Client ID and Client Secret from the app dashboard")
+            
+            # Get credentials from user
+            client_id = input("\nEnter your Spotify Client ID: ").strip()
+            client_secret = input("Enter your Spotify Client Secret: ").strip()
+            
+            # Create/update credentials file
+            credentials = {
+                "client_id": client_id,
+                "client_secret": client_secret,
+                "redirect_uri": DEFAULT_REDIRECT_URI,
+                "scope": DEFAULT_SCOPE
+            }
+            
+            # Save credentials
+            self._save_credentials(credentials)
+            print("Credentials saved successfully!")
+            
+        return credentials
+    
+    def _load_credentials(self):
+        """Load credentials from file."""
+        try:
+            if os.path.exists(self.credentials_path):
+                with open(self.credentials_path, 'r') as f:
+                    return json.load(f)
+        except Exception as e:
+            print(f"Error loading credentials: {e}")
+        
+        return None
+    
+    def _save_credentials(self, credentials):
+        """Save credentials to file."""
+        try:
+            with open(self.credentials_path, 'w') as f:
+                json.dump(credentials, f, indent=4)
+        except Exception as e:
+            print(f"Error saving credentials: {e}")
+    
     def get_spotify_client(self):
         """Get an authenticated Spotify client."""
         token_info = self._get_token_info()
@@ -126,4 +176,27 @@ class SpotifyAuth:
             os.remove(self.token_path)
             print("Logged out successfully.")
         else:
-            print("No active session found.") 
+            print("No active session found.")
+    
+    def reset_credentials(self):
+        """Clear stored credentials and prompt for new ones."""
+        if os.path.exists(self.credentials_path):
+            os.remove(self.credentials_path)
+        
+        # Also remove token to force new authentication
+        if os.path.exists(self.token_path):
+            os.remove(self.token_path)
+            
+        print("Credentials and session reset. You will be prompted for new credentials next time.")
+        
+        # Reinitialize credentials
+        self.credentials = self._get_or_create_credentials()
+        
+        # Recreate OAuth object with new credentials
+        self.sp_oauth = SpotifyOAuth(
+            client_id=self.credentials["client_id"],
+            client_secret=self.credentials["client_secret"],
+            redirect_uri=self.credentials["redirect_uri"],
+            scope=self.credentials["scope"],
+            cache_path=self.token_path
+        ) 

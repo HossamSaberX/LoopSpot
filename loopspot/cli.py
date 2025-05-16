@@ -90,6 +90,7 @@ class LoopSpotCLI:
         print("  9. Load a saved loop")
         print("  10. Delete a saved loop")
         print("  11. Refresh current track")
+        print("  12. Reset Spotify credentials")
         print("  0. Exit")
         print("\nEnter command: ", end="")
     
@@ -365,6 +366,25 @@ class LoopSpotCLI:
         self.loop_controller.set_point_b_timestamp(timestamp)
         time.sleep(1)
     
+    def reset_credentials(self):
+        """Reset Spotify API credentials."""
+        clear_screen()
+        print("Reset Spotify Credentials")
+        print("=" * 60)
+        print("\nThis will delete your current Spotify API credentials.")
+        print("You will need to enter new credentials the next time you start LoopSpot.")
+        confirm = input("\nAre you sure you want to continue? (y/n): ").strip().lower()
+        
+        if confirm == 'y':
+            self.auth.reset_credentials()
+            print("\nCredentials reset successfully.")
+            print("The application will now exit. Restart to use new credentials.")
+            input("\nPress Enter to continue...")
+            self.running = False
+        else:
+            print("\nOperation cancelled.")
+            time.sleep(1)
+    
     def process_command(self, command):
         """Process a user command."""
         if command == '1':  # Set point A (current)
@@ -392,6 +412,8 @@ class LoopSpotCLI:
         elif command == '11':  # Refresh current track
             # Nothing to do, will refresh on next loop
             pass
+        elif command == '12':  # Reset Spotify credentials
+            self.reset_credentials()
         elif command == '0':  # Exit
             self.running = False
             if self.loop_controller and self.loop_controller.active:
