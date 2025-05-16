@@ -404,41 +404,34 @@ class LoopSpotCLI:
     
     def process_command(self, command):
         """Process a user command."""
-        if command == '1':  # Set point A (current)
-            # No confirmation, set immediately
-            self.loop_controller.set_point_a()
-        elif command == '2':  # Set point B (current)
-            # No confirmation, set immediately
-            self.loop_controller.set_point_b()
-        elif command == '3':  # Set point A (manual)
-            self.set_point_a_manual()
-        elif command == '4':  # Set point B (manual)
-            self.set_point_b_manual()
-        elif command == '5':  # Start loop
-            self.loop_controller.start_loop()
-        elif command == '6':  # Stop loop
-            self.loop_controller.stop_loop()
-        elif command == '7':  # Save current loop
-            self.save_current_loop()
-        elif command == '8':  # List saved loops
-            self.list_saved_loops()
-        elif command == '9':  # Load a saved loop
-            self.load_saved_loop()
-        elif command == '10':  # Delete a saved loop
-            self.delete_saved_loop()
-        elif command == '11':  # Refresh current track
-            # Nothing to do, will refresh on next loop
-            pass
-        elif command == '12':  # Reset Spotify credentials
-            self.reset_credentials()
-        elif command == '0':  # Exit
-            self.running = False
-            if self.loop_controller and self.loop_controller.active:
-                self.loop_controller.stop_loop()
-            print("Exiting LoopSpot. Goodbye!")
+        command_map = {
+            '1': self.loop_controller.set_point_a,         # Set point A (current)
+            '2': self.loop_controller.set_point_b,         # Set point B (current)
+            '3': self.set_point_a_manual,                  # Set point A (manual)
+            '4': self.set_point_b_manual,                  # Set point B (manual)
+            '5': self.loop_controller.start_loop,          # Start loop
+            '6': self.loop_controller.stop_loop,           # Stop loop
+            '7': self.save_current_loop,                   # Save current loop
+            '8': self.list_saved_loops,                    # List saved loops
+            '9': self.load_saved_loop,                     # Load a saved loop
+            '10': self.delete_saved_loop,                  # Delete a saved loop
+            '11': lambda: None,                            # Refresh current track (no action needed)
+            '12': self.reset_credentials,                  # Reset Spotify credentials
+            '0': self._exit_app                            # Exit
+        }
+        
+        if command in command_map:
+            command_map[command]()
         else:
             print("Invalid command.")
             time.sleep(1)
+    
+    def _exit_app(self):
+        """Exit the application."""
+        self.running = False
+        if self.loop_controller and self.loop_controller.active:
+            self.loop_controller.stop_loop()
+        print("Exiting LoopSpot. Goodbye!")
     
     def run(self):
         """Run the main CLI loop."""
