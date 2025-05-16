@@ -1,2 +1,7 @@
-spotipy>=2.19.0
-requests>=2.26.0 
+certifi==2025.4.26
+charset-normalizer==3.4.2
+idna==3.10
+redis==6.1.0
+requests==2.32.3
+spotipy==2.25.1
+urllib3==2.4.0
