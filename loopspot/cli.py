@@ -372,15 +372,32 @@ class LoopSpotCLI:
         print("Reset Spotify Credentials")
         print("=" * 60)
         print("\nThis will delete your current Spotify API credentials.")
-        print("You will need to enter new credentials the next time you start LoopSpot.")
+        print("You will need to enter new credentials.")
         confirm = input("\nAre you sure you want to continue? (y/n): ").strip().lower()
         
         if confirm == 'y':
             self.auth.reset_credentials()
             print("\nCredentials reset successfully.")
-            print("The application will now exit. Restart to use new credentials.")
-            input("\nPress Enter to continue...")
-            self.running = False
+            print("Restarting application with new credentials...")
+            time.sleep(2)
+            
+            # Reinitialize the CLI components
+            self.auth = SpotifyAuth()
+            
+            # Stop active loop if running
+            if self.loop_controller and self.loop_controller.active:
+                self.loop_controller.stop_loop()
+            
+            # Clear references to old instances
+            self.sp = None
+            self.player = None
+            self.loop_controller = None
+            
+            # Reinitialize with new credentials
+            if not self.initialize():
+                print("Failed to initialize with new credentials.")
+                time.sleep(2)
+                self.running = False
         else:
             print("\nOperation cancelled.")
             time.sleep(1)
