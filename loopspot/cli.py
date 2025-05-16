@@ -60,14 +60,21 @@ class LoopSpotCLI:
         print("\nCurrent Track:")
         print(self.player.get_pretty_playback_status())
         
-        # Print loop points if set
-        points = self.loop_controller.get_current_points()
-        if points:
-            print(f"Loop Points: A={points['point_a_formatted']} B={points['point_b_formatted']}")
-            if self.loop_controller.active:
-                print("Loop Status: ACTIVE")
-            else:
-                print("Loop Status: INACTIVE")
+        # Show point A regardless of whether point B is set
+        if self.loop_controller.point_a is not None:
+            point_a_time = self.player.format_time(self.loop_controller.point_a)
+            print(f"Point A: {point_a_time}")
+            
+            # Show point B if it's also set
+            if self.loop_controller.point_b is not None:
+                point_b_time = self.player.format_time(self.loop_controller.point_b)
+                print(f"Point B: {point_b_time}")
+                
+                # Only show loop status when both points are set
+                if self.loop_controller.active:
+                    print("Loop Status: ACTIVE")
+                else:
+                    print("Loop Status: INACTIVE")
     
     def print_menu(self):
         """Print the main menu."""
