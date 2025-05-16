@@ -8,6 +8,13 @@ on:
     branches: [ main, master ]  # Run workflow on PRs to main/master
   workflow_dispatch:  # Enable manual trigger button in GitHub UI
 
+# Add workflow permissions
+permissions:
+  contents: write
+  packages: read
+  issues: read
+  pull-requests: read
+
 jobs:
   build-linux:
     runs-on: ubuntu-latest
@@ -70,6 +77,9 @@ jobs:
     needs: [build-linux, build-windows]
     if: startsWith(github.ref, 'refs/tags/')  # Only run on tag pushes
     runs-on: ubuntu-latest
+    # Add specific permissions for this job
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
