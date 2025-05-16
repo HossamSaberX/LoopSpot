@@ -230,9 +230,10 @@ class LoopController:
                 # Check playback position
                 position = track['progress_ms']
                 
-                # If we've passed point B, jump back to point A
-                if position >= self.point_b:
-                    print(f"Looping back to {self.player.format_time(self.point_a)}")
+                # STRICT LOOPING: Check if current position is outside our loop range
+                if position < self.point_a or position >= self.point_b:
+                    # If it's before point A or after/at point B, jump back to point A
+                    print(f"Playback outside loop range. Returning to {self.player.format_time(self.point_a)}")
                     self.player.seek_to_position(self.point_a)
                 
                 # Sleep for a short time to avoid excessive API calls
