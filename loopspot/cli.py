@@ -61,13 +61,15 @@ class LoopSpotCLI:
         print("\nCommands:")
         print("  1. Set point A (current position)")
         print("  2. Set point B (current position)")
-        print("  3. Start loop")
-        print("  4. Stop loop")
-        print("  5. Save current loop")
-        print("  6. List saved loops")
-        print("  7. Load a saved loop")
-        print("  8. Delete a saved loop")
-        print("  9. Refresh current track")
+        print("  3. Set point A (manual timestamp)")
+        print("  4. Set point B (manual timestamp)")
+        print("  5. Start loop")
+        print("  6. Stop loop")
+        print("  7. Save current loop")
+        print("  8. List saved loops")
+        print("  9. Load a saved loop")
+        print("  10. Delete a saved loop")
+        print("  11. Refresh current track")
         print("  0. Exit")
         print("\nEnter command: ", end="")
     
@@ -220,25 +222,69 @@ class LoopSpotCLI:
             print("Invalid input.")
             time.sleep(1)
     
+    def set_point_a_manual(self):
+        """Set point A with a manually entered timestamp."""
+        track = self.player.get_current_track()
+        if not track:
+            print("No track is currently playing.")
+            time.sleep(1)
+            return
+        
+        print(f"\nCurrent track: {track['name']} - {track['artist']}")
+        print(f"Track duration: {self.player.format_time(track['duration_ms'])}")
+        if self.loop_controller.point_a is not None:
+            print(f"Current point A: {self.player.format_time(self.loop_controller.point_a)}")
+        
+        timestamp = input("\nEnter point A timestamp (mm:ss format): ")
+        self.loop_controller.set_point_a_timestamp(timestamp)
+        time.sleep(1)
+    
+    def set_point_b_manual(self):
+        """Set point B with a manually entered timestamp."""
+        track = self.player.get_current_track()
+        if not track:
+            print("No track is currently playing.")
+            time.sleep(1)
+            return
+        
+        if self.loop_controller.point_a is None:
+            print("Please set point A first.")
+            time.sleep(1)
+            return
+        
+        print(f"\nCurrent track: {track['name']} - {track['artist']}")
+        print(f"Track duration: {self.player.format_time(track['duration_ms'])}")
+        print(f"Point A: {self.player.format_time(self.loop_controller.point_a)}")
+        if self.loop_controller.point_b is not None:
+            print(f"Current point B: {self.player.format_time(self.loop_controller.point_b)}")
+        
+        timestamp = input("\nEnter point B timestamp (mm:ss format): ")
+        self.loop_controller.set_point_b_timestamp(timestamp)
+        time.sleep(1)
+    
     def process_command(self, command):
         """Process a user command."""
-        if command == '1':  # Set point A
+        if command == '1':  # Set point A (current)
             self.loop_controller.set_point_a()
-        elif command == '2':  # Set point B
+        elif command == '2':  # Set point B (current)
             self.loop_controller.set_point_b()
-        elif command == '3':  # Start loop
+        elif command == '3':  # Set point A (manual)
+            self.set_point_a_manual()
+        elif command == '4':  # Set point B (manual)
+            self.set_point_b_manual()
+        elif command == '5':  # Start loop
             self.loop_controller.start_loop()
-        elif command == '4':  # Stop loop
+        elif command == '6':  # Stop loop
             self.loop_controller.stop_loop()
-        elif command == '5':  # Save current loop
+        elif command == '7':  # Save current loop
             self.save_current_loop()
-        elif command == '6':  # List saved loops
+        elif command == '8':  # List saved loops
             self.list_saved_loops()
-        elif command == '7':  # Load a saved loop
+        elif command == '9':  # Load a saved loop
             self.load_saved_loop()
-        elif command == '8':  # Delete a saved loop
+        elif command == '10':  # Delete a saved loop
             self.delete_saved_loop()
-        elif command == '9':  # Refresh current track
+        elif command == '11':  # Refresh current track
             # Nothing to do, will refresh on next loop
             pass
         elif command == '0':  # Exit

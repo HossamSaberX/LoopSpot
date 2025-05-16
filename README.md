@@ -5,6 +5,7 @@ A proof-of-concept command-line application that allows setting A/B loop points 
 ## Features
 
 - Set loop points A and B at current playback positions
+- Manually enter custom timestamps for precise loop points
 - Automatically loop between points A and B during playback
 - Save and load loop points for your favorite tracks
 - Simple command-line interface
@@ -70,13 +71,15 @@ LoopSpot monitors your Spotify playback position in real-time. When the playback
 
 - **1**: Set point A (current position)
 - **2**: Set point B (current position)
-- **3**: Start loop
-- **4**: Stop loop
-- **5**: Save current loop
-- **6**: List saved loops
-- **7**: Load a saved loop
-- **8**: Delete a saved loop
-- **9**: Refresh current track
+- **3**: Set point A (manual timestamp)
+- **4**: Set point B (manual timestamp)
+- **5**: Start loop
+- **6**: Stop loop
+- **7**: Save current loop
+- **8**: List saved loops
+- **9**: Load a saved loop
+- **10**: Delete a saved loop
+- **11**: Refresh current track
 - **0**: Exit
 
 ## Notes

@@ -29,6 +29,40 @@ class LoopController:
         print(f"Point A set at {formatted_time}")
         return True
     
+    def set_point_a_timestamp(self, timestamp):
+        """Set point A to a specific timestamp (mm:ss format)."""
+        track = self.player.get_current_track()
+        if not track:
+            print("No track is currently playing.")
+            return False
+        
+        try:
+            # Parse mm:ss format into milliseconds
+            parts = timestamp.strip().split(':')
+            if len(parts) != 2:
+                print("Invalid timestamp format. Please use mm:ss format.")
+                return False
+            
+            minutes = int(parts[0])
+            seconds = int(parts[1])
+            position_ms = (minutes * 60 + seconds) * 1000
+            
+            # Validate the timestamp
+            if position_ms < 0 or position_ms > track['duration_ms']:
+                print(f"Timestamp out of range. Track duration is {self.player.format_time(track['duration_ms'])}.")
+                return False
+            
+            self.point_a = position_ms
+            self.current_track_id = track['id']
+            
+            formatted_time = self.player.format_time(position_ms)
+            print(f"Point A set at {formatted_time}")
+            return True
+            
+        except ValueError:
+            print("Invalid timestamp format. Please use mm:ss format.")
+            return False
+    
     def set_point_b(self):
         """Set point B to the current playback position."""
         track = self.player.get_current_track()
@@ -56,6 +90,52 @@ class LoopController:
         formatted_time = self.player.format_time(position)
         print(f"Point B set at {formatted_time}")
         return True
+    
+    def set_point_b_timestamp(self, timestamp):
+        """Set point B to a specific timestamp (mm:ss format)."""
+        track = self.player.get_current_track()
+        if not track:
+            print("No track is currently playing.")
+            return False
+        
+        if not self.point_a:
+            print("Please set point A first.")
+            return False
+        
+        if track['id'] != self.current_track_id:
+            print("Track has changed. Please set point A again.")
+            self.point_a = None
+            return False
+        
+        try:
+            # Parse mm:ss format into milliseconds
+            parts = timestamp.strip().split(':')
+            if len(parts) != 2:
+                print("Invalid timestamp format. Please use mm:ss format.")
+                return False
+            
+            minutes = int(parts[0])
+            seconds = int(parts[1])
+            position_ms = (minutes * 60 + seconds) * 1000
+            
+            # Validate the timestamp
+            if position_ms < 0 or position_ms > track['duration_ms']:
+                print(f"Timestamp out of range. Track duration is {self.player.format_time(track['duration_ms'])}.")
+                return False
+            
+            # Ensure point B is after point A
+            if position_ms <= self.point_a:
+                print("Point B must be after point A.")
+                return False
+            
+            self.point_b = position_ms
+            formatted_time = self.player.format_time(position_ms)
+            print(f"Point B set at {formatted_time}")
+            return True
+            
+        except ValueError:
+            print("Invalid timestamp format. Please use mm:ss format.")
+            return False
     
     def clear_points(self):
         """Clear the current loop points."""
