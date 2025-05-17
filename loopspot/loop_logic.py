@@ -10,6 +10,7 @@ class LoopController:
         self.point_a = None
         self.point_b = None
         self.current_track_id = None
+        self.current_loop_name = None
         self.active = False
         self.loop_thread = None
         self.stop_event = threading.Event()
@@ -224,6 +225,7 @@ class LoopController:
         self.point_a = loop_data.get('point_a')
         self.point_b = loop_data.get('point_b')
         self.current_track_id = loop_data.get('track_id')
+        self.current_loop_name = loop_data.get('loop_name')
         
         print(f"Loop loaded: {self.player.format_time(self.point_a)} - {self.player.format_time(self.point_b)}")
         return True

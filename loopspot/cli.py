@@ -70,6 +70,10 @@ class LoopSpotCLI:
                 point_b_time = self.player.format_time(self.loop_controller.point_b)
                 print(f"Point B: {point_b_time}")
                 
+                # Show loop name if it exists
+                if self.loop_controller.current_loop_name:
+                    print(f"Loop Name: {self.loop_controller.current_loop_name}")
+                
                 # Only show loop status when both points are set
                 if self.loop_controller.active:
                     print("Loop Status: ACTIVE")
@@ -89,7 +93,7 @@ class LoopSpotCLI:
         print("  8. List saved loops")
         print("  9. Load a saved loop")
         print("  10. Delete a saved loop")
-        print("  11. Refresh current track")
+        print("  11. Refresh spotify token and show current track")
         print("  12. Reset Spotify credentials")
         print("  0. Exit")
         print("\nEnter command: ", end="")
@@ -242,15 +246,14 @@ class LoopSpotCLI:
                             time.sleep(2)
                             return
                         
-                        # Wait for track to load
-                        print("Waiting for track to load...")
-                        time.sleep(2)
+                        time.sleep(1)
                     
                     # Now load the loop
                     loop_data = {
                         'track_id': selected_track['track_id'],
                         'point_a': selected_loop['point_a'],
-                        'point_b': selected_loop['point_b']
+                        'point_b': selected_loop['point_b'],
+                        'loop_name': selected_loop['name']
                     }
                     
                     if self.loop_controller.load_loop(loop_data):
@@ -415,7 +418,7 @@ class LoopSpotCLI:
             '8': self.list_saved_loops,                    # List saved loops
             '9': self.load_saved_loop,                     # Load a saved loop
             '10': self.delete_saved_loop,                  # Delete a saved loop
-            '11': lambda: None,                            # Refresh current track (no action needed)
+            '11': self.refresh_token,                      # Refresh token
             '12': self.reset_credentials,                  # Reset Spotify credentials
             '0': self._exit_app                            # Exit
         }
@@ -446,4 +449,14 @@ class LoopSpotCLI:
             command = input()
             self.process_command(command)
         
-        return True 
+        return True
+    
+    def refresh_token(self):
+        # Get a new client with a fresh token
+        self.sp = self.auth.get_spotify_client()
+        if self.sp:
+            # Update the player with the new client
+            self.player.sp = self.sp
+            print("Token refreshed successfully.")
+        else:
+            print("Failed to refresh token.")
