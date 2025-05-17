@@ -74,10 +74,13 @@ class SpotifyAuth:
             print("1. Go to https://developer.spotify.com/dashboard")
             print("2. Log in with your Spotify account")
             print("3. Click 'Create app'")
-            print("4. Fill in the app details (name, description, etc.)")
-            print("5. Set the redirect URI to: http://127.0.0.1:8888/")
-            print("6. Accept the terms and create the app")
-            print("7. Copy the Client ID and Client Secret from the app dashboard")
+            print("4. Fill in the app details:")
+            print("   - Name: 'LoopSpot' (or any name you prefer)")
+            print("   - Description: Enter anything (this is just for your reference)")
+            print("   - Redirect URI: http://127.0.0.1:8888/")
+            print("   - IMPORTANT: Select the 'Web API' option (make sure this box is checked)")
+            print("5. Check 'I understand and agree with Spotify's Developer Terms' and click 'Save'")
+            print("6. Copy the Client ID and Client Secret from the app dashboard")
             
             # Get credentials from user
             client_id = input("\nEnter your Spotify Client ID: ").strip()

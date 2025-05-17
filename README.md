@@ -1,6 +1,6 @@
 # LoopSpot - Spotify AB Looper (CLI Version)
 
-A proof-of-concept command-line application that allows setting A/B loop points for Spotify tracks.
+A command-line application that allows setting A/B loop points for Spotify tracks, enabling seamless practice or focused listening of specific parts of songs.
 
 ## Features
 
@@ -9,12 +9,12 @@ A proof-of-concept command-line application that allows setting A/B loop points 
 - Automatically loop between points A and B during playback
 - Save and load loop points for your favorite tracks
 - Simple command-line interface
-- User-provided Spotify API credentials
+- Quick setup with Spotify API credentials
 
 ## Requirements
 
 - Python 3.6 or higher
-- Spotify Premium account
+- **Spotify Premium account** (required for the API to seek to specific timestamps)
 - Active Spotify playback on any device
 - Spotify application registered with the Spotify Developer Dashboard
 
@@ -49,10 +49,11 @@ When you first run LoopSpot, you'll need to set up your own Spotify Developer cr
 2. Click "Create app"
 3. Fill in the required fields:
    - App name: "LoopSpot" (or any name you prefer)
-   - App description: "A/B loop controller for Spotify"
+   - App description: Enter anything (this is just for your reference)
    - Redirect URI: `http://127.0.0.1:8888/`
-   - Select appropriate API scopes
-4. Accept the terms and conditions and create the app
+   - **Important**: Select the "Web API" option (make sure this box is checked)
+   ![Web API Selection](https://developer.spotify.com/assets/WebAPI.png)
+4. Check "I understand and agree with Spotify's Developer Terms" and click "Save"
 5. Copy the Client ID and Client Secret from your app's dashboard
 6. Enter these values when prompted by LoopSpot
 
@@ -103,10 +104,10 @@ You can reset your credentials at any time using option 12 in the menu.
 
 ## Notes
 
-- This is a proof-of-concept application
 - Loop accuracy may vary depending on network conditions
 - You must have an active Spotify playback session on any device
 - The HTTP server uses port 8888 for the OAuth callback 
+- **Spotify Premium is required** for the seeking functionality to work properly
 
 ## Releases & Executable Builds
 
@@ -116,8 +117,23 @@ LoopSpot uses GitHub Actions to automatically build executables for Windows and 
 
 1. Go to the [Releases](https://github.com/yourusername/loopspot/releases) page
 2. Download the appropriate executable for your platform:
-   - `loopspot-windows.exe` for Windows
-   - `loopspot-linux` for Linux
+   - `loopspot.exe` for Windows
+   - `loopspot` for Linux
+
+### Running the Executable
+
+#### Windows
+- Simply double-click the `loopspot.exe` file to run the application
+
+#### Linux
+- After downloading, make the file executable:
+  ```
+  chmod +x loopspot
+  ```
+- Then run it from the terminal:
+  ```
+  ./loopspot
+  ```
 
 ### Triggering New Builds
 

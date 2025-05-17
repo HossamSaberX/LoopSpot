@@ -36,13 +36,13 @@ jobs:
 
       - name: Build with PyInstaller
         run: |
-          pyinstaller --onefile --name loopspot-linux --icon=Looper.png run.py
+          pyinstaller --onefile --name loopspot --icon=Looper.png run.py
           
       - name: Upload Linux build artifact
         uses: actions/upload-artifact@v4
         with:
           name: loopspot-linux
-          path: dist/loopspot-linux
+          path: dist/loopspot
           
   build-windows:
     runs-on: windows-latest
@@ -65,13 +65,13 @@ jobs:
 
       - name: Build with PyInstaller
         run: |
-          pyinstaller --onefile --name loopspot-windows --icon=Looper.png run.py
+          pyinstaller --onefile --name loopspot --icon=Looper.png run.py
           
       - name: Upload Windows build artifact
         uses: actions/upload-artifact@v4
         with:
           name: loopspot-windows
-          path: dist/loopspot-windows.exe
+          path: dist/loopspot.exe
           
   create-release:
     needs: [build-linux, build-windows]
@@ -109,14 +109,14 @@ jobs:
           path: dist
           
       - name: Make Linux executable
-        run: chmod +x dist/loopspot-linux
+        run: chmod +x dist/loopspot
           
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            dist/loopspot-linux
-            dist/loopspot-windows.exe
+            dist/loopspot
+            dist/loopspot.exe
           body_path: CHANGELOG.md
           draft: false
           prerelease: false
