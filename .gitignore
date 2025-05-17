@@ -45,12 +45,10 @@ env.bak/
 venv.bak/
 
 # Application-specific files
-data/spotify_token.json
-data/loop_points.json
+data/
 Plan.md
 
 # Editor files
 .idea/
 .vscode/
 *.swp
-*~ 
