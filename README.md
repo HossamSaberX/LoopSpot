@@ -11,6 +11,20 @@ A command-line application that allows setting A/B loop points for Spotify track
 - Simple command-line interface
 - Quick setup with Spotify API credentials
 
+## Screenshots and Demo
+
+### Screenshots
+
+![LoopSpot Interface](assets/images/LoopSpot.png)
+
+*The LoopSpot command-line interface showing saved loops for Tame Impala tracks.*
+
+### Video Demo
+
+[![LoopSpot Demo Video](assets/images/Thumbnail.png)](https://youtu.be/wzKtVWIY1qw)
+
+*Click the image above to watch a demonstration of LoopSpot in action with audio.*
+
 ## Requirements
 
 - Python 3.6 or higher
