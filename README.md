@@ -117,22 +117,22 @@ LoopSpot uses GitHub Actions to automatically build executables for Windows and 
 
 1. Go to the [Releases](https://github.com/yourusername/loopspot/releases) page
 2. Download the appropriate executable for your platform:
-   - `loopspot.exe` for Windows
-   - `loopspot` for Linux
+   - `LoopSpot.exe` for Windows
+   - `LoopSpot` for Linux
 
 ### Running the Executable
 
 #### Windows
-- Simply double-click the `loopspot.exe` file to run the application
+- Simply double-click the `LoopSpot.exe` file to run the application
 
 #### Linux
 - After downloading, make the file executable:
   ```
-  chmod +x loopspot
+  chmod +x LoopSpot
   ```
 - Then run it from the terminal:
   ```
-  ./loopspot
+  ./LoopSpot
   ```
 
 ### Triggering New Builds
