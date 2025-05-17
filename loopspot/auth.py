@@ -1,13 +1,15 @@
 import os
 import json
 import webbrowser
+import sys
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+from .utils import get_application_path
 
 # Paths
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = get_application_path()
 DATA_DIR = os.path.join(BASE_DIR, "data")
 CREDENTIALS_PATH = os.path.join(DATA_DIR, "spotify_credentials.json")
 TOKEN_PATH = os.path.join(DATA_DIR, "spotify_token.json")

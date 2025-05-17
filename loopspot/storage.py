@@ -1,13 +1,15 @@
 import os
 import json
+import sys
 from datetime import datetime
+from .utils import get_application_path
 
 class LoopStorage:
     """Handle storage of loop points."""
     
     def __init__(self, storage_dir="data"):
         """Initialize storage."""
-        self.storage_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self.storage_dir = get_application_path()
         self.storage_path = os.path.join(self.storage_dir, storage_dir, "loop_points.json")
         os.makedirs(os.path.dirname(self.storage_path), exist_ok=True)
         self.loops = self._load_loops()
