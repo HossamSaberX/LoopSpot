@@ -41,6 +41,64 @@ A command-line application that allows setting A/B loop points for Spotify track
    - Follow the on-screen instructions to create a Spotify application
    - Enter your Client ID and Client Secret when prompted
 
+## Using Virtual Environment
+
+For a more isolated and cleaner installation, you can use a virtual environment:
+
+### Windows
+
+1. Create a virtual environment:
+   ```
+   python -m venv venv
+   ```
+
+2. Activate the virtual environment:
+   ```
+   venv\Scripts\activate
+   ```
+
+3. Install dependencies inside the virtual environment:
+   ```
+   pip install -r requirements.txt
+   ```
+
+4. Run the application:
+   ```
+   python run.py
+   ```
+
+5. When you're done, deactivate the virtual environment:
+   ```
+   deactivate
+   ```
+
+### Linux
+
+1. Create a virtual environment:
+   ```
+   python3 -m venv venv
+   ```
+
+2. Activate the virtual environment:
+   ```
+   source venv/bin/activate
+   ```
+
+3. Install dependencies inside the virtual environment:
+   ```
+   pip install -r requirements.txt
+   ```
+
+4. Run the application:
+   ```
+   python run.py
+   ```
+
+5. When you're done, deactivate the virtual environment:
+   ```
+   deactivate
+   ```
+
 ## Setting up Spotify Developer Credentials
 
 When you first run LoopSpot, you'll need to set up your own Spotify Developer credentials:
