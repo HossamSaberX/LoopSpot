@@ -22,7 +22,7 @@ A command-line application that allows setting A/B loop points for Spotify track
 
 1. Clone this repository:
    ```
-   git clone https://github.com/yourusername/loopspot.git
+   git clone https://github.com/hossamsaberx/loopspot.git
    cd loopspot
    ```
 
@@ -52,7 +52,6 @@ When you first run LoopSpot, you'll need to set up your own Spotify Developer cr
    - App description: Enter anything (this is just for your reference)
    - Redirect URI: `http://127.0.0.1:8888/`
    - **Important**: Select the "Web API" option (make sure this box is checked)
-   ![Web API Selection](https://developer.spotify.com/assets/WebAPI.png)
 4. Check "I understand and agree with Spotify's Developer Terms" and click "Save"
 5. Copy the Client ID and Client Secret from your app's dashboard
 6. Enter these values when prompted by LoopSpot
@@ -123,9 +122,14 @@ LoopSpot uses GitHub Actions to automatically build executables for Windows and 
 ### Running the Executable
 
 #### Windows
+- Create a dedicated folder for LoopSpot (e.g., `C:\Program Files\LoopSpot`)
+- Place the `LoopSpot.exe` file in this folder
 - Simply double-click the `LoopSpot.exe` file to run the application
+- The application will automatically create a `data` folder next to the executable to store your settings and saved loops
 
 #### Linux
+- Create a dedicated folder for LoopSpot (e.g., `~/LoopSpot` or `/opt/loopspot`)
+- Place the `LoopSpot` file in this folder
 - After downloading, make the file executable:
   ```
   chmod +x LoopSpot
@@ -134,6 +138,9 @@ LoopSpot uses GitHub Actions to automatically build executables for Windows and 
   ```
   ./LoopSpot
   ```
+- The application will automatically create a `data` folder next to the executable to store your settings and saved loops
+
+> **Important**: Always place the executable in a dedicated folder with write permissions. This ensures that your settings and saved loops persist between sessions. If you run the executable from a temporary folder or directly from your Downloads folder, your data may not be saved properly.
 
 ### Triggering New Builds
 
