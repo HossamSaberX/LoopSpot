@@ -214,19 +214,21 @@ LoopSpot uses GitHub Actions to automatically build executables for Windows and 
 
 > **Important**: Always place the executable in a dedicated folder with write permissions. This ensures that your settings and saved loops persist between sessions. If you run the executable from a temporary folder or directly from your Downloads folder, your data may not be saved properly.
 
-### Triggering New Builds
+## TODOs and Future Features
 
-For repository maintainers:
+Here are some planned improvements for LoopSpot:
 
-1. Make your changes and commit them
-2. Tag the commit with a version number:
-   ```
-   git tag v1.0.0
-   git push origin v1.0.0
-   ```
-3. The GitHub Action will automatically:
-   - Build executables for Windows and Linux
-   - Create a new release with these executables
-   - Generate release notes from commit messages
+- Sharing saved loops between users
+- GUI version with waveform visualization
+- Keyboard shortcuts for faster loop creation
+- Playlist generation from favorite loops
 
-You can also manually trigger builds from the GitHub Actions tab by using the "workflow_dispatch" trigger. 
+## Contributing
+
+Contributions to LoopSpot are welcome! If you have ideas for improvements or new features, feel free to:
+
+1. Fork the repository
+2. Create a feature branch
+3. Submit a pull request
+
+You can also open an issue to report bugs or suggest enhancements. 
