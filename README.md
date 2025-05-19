@@ -1,6 +1,20 @@
-# LoopSpot - Spotify AB Looper (CLI Version)
+# LoopSpot - Spotify AB Looper
 
 A command-line application that allows setting A/B loop points for Spotify tracks, enabling seamless practice or focused listening of specific parts of songs.
+
+## Quick Start
+
+### Download
+- Get the latest release from [Releases](https://github.com/hossamsaberx/loopspot/releases)
+- Windows: Download `LoopSpot.exe`
+- Linux: Download `LoopSpot` binary
+
+### Run
+1. Create a dedicated folder (e.g., `~/LoopSpot` or `/opt/loopspot`)
+2. Place the executable in the folder
+3. Run the application:
+   - Windows: Double-click `LoopSpot.exe`
+   - Linux: `chmod +x LoopSpot && ./LoopSpot`
 
 ## Features
 
@@ -9,7 +23,6 @@ A command-line application that allows setting A/B loop points for Spotify track
 - Automatically loop between points A and B during playback
 - Save and load loop points for your favorite tracks
 - Simple command-line interface
-- Quick setup with Spotify API credentials
 
 ## Screenshots and Demo
 
@@ -27,126 +40,27 @@ A command-line application that allows setting A/B loop points for Spotify track
 
 ## Requirements
 
-- Python 3.6 or higher
-- **Spotify Premium account** (required for the API to seek to specific timestamps)
+- **Spotify Premium account** (required for seeking functionality)
 - Active Spotify playback on any device
-- Spotify application registered with the Spotify Developer Dashboard
 
-## Installation
+## Development Setup
 
-1. Clone this repository:
-   ```
+1. Clone and install:
+   ```bash
    git clone https://github.com/hossamsaberx/loopspot.git
    cd loopspot
-   ```
-
-2. Install the required dependencies:
-   ```
    pip install -r requirements.txt
    ```
+
+2. Set up Spotify Developer credentials:
+   - Go to [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
+   - Create new app with redirect URI: `http://127.0.0.1:8888/`
+   - Copy Client ID and Secret
 
 3. Run the application:
-   ```
+   ```bash
    python run.py
    ```
-
-4. First-time setup:
-   - You'll be guided through the process of setting up your Spotify Developer credentials
-   - Follow the on-screen instructions to create a Spotify application
-   - Enter your Client ID and Client Secret when prompted
-
-## Using Virtual Environment
-
-For a more isolated and cleaner installation, you can use a virtual environment:
-
-### Windows
-
-1. Create a virtual environment:
-   ```
-   python -m venv venv
-   ```
-
-2. Activate the virtual environment:
-   ```
-   venv\Scripts\activate
-   ```
-
-3. Install dependencies inside the virtual environment:
-   ```
-   pip install -r requirements.txt
-   ```
-
-4. Run the application:
-   ```
-   python run.py
-   ```
-
-5. When you're done, deactivate the virtual environment:
-   ```
-   deactivate
-   ```
-
-### Linux
-
-1. Create a virtual environment:
-   ```
-   python3 -m venv venv
-   ```
-
-2. Activate the virtual environment:
-   ```
-   source venv/bin/activate
-   ```
-
-3. Install dependencies inside the virtual environment:
-   ```
-   pip install -r requirements.txt
-   ```
-
-4. Run the application:
-   ```
-   python run.py
-   ```
-
-5. When you're done, deactivate the virtual environment:
-   ```
-   deactivate
-   ```
-
-## Setting up Spotify Developer Credentials
-
-When you first run LoopSpot, you'll need to set up your own Spotify Developer credentials:
-
-1. Go to the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard) and log in
-2. Click "Create app"
-3. Fill in the required fields:
-   - App name: "LoopSpot" (or any name you prefer)
-   - App description: Enter anything (this is just for your reference)
-   - Redirect URI: `http://127.0.0.1:8888/`
-   - **Important**: Select the "Web API" option (make sure this box is checked)
-4. Check "I understand and agree with Spotify's Developer Terms" and click "Save"
-5. Copy the Client ID and Client Secret from your app's dashboard
-6. Enter these values when prompted by LoopSpot
-
-## Usage
-
-1. Run the application:
-   ```
-   python run.py
-   ```
-
-2. Authenticate with your Spotify account when prompted.
-
-3. Use the command-line interface to set loop points and control playback:
-   - Set point A at the current playback position
-   - Set point B at the current playback position
-   - Start/stop the loop
-   - Save loops for future use
-   - Load previously saved loops
-
-## How It Works
-
-LoopSpot monitors your Spotify playback position in real-time. When the playback position reaches your defined point B, it automatically seeks back to point A, creating a seamless loop.
 
 ## Commands
 
@@ -164,71 +78,17 @@ LoopSpot monitors your Spotify playback position in real-time. When the playback
 - **12**: Reset Spotify credentials
 - **0**: Exit
 
-## Data Storage
-
-LoopSpot stores two types of data:
-- **Spotify Credentials**: Stored in `data/spotify_credentials.json`
-- **Access Tokens**: Stored in `data/spotify_token.json`
-- **Loop Points**: Stored in `data/loop_points.json`
-
-You can reset your credentials at any time using option 12 in the menu.
-
-## Notes
-
-- Loop accuracy may vary depending on network conditions
-- You must have an active Spotify playback session on any device
-- The HTTP server uses port 8888 for the OAuth callback 
-- **Spotify Premium is required** for the seeking functionality to work properly
-
-## Releases & Executable Builds
-
-LoopSpot uses GitHub Actions to automatically build executables for Windows and Linux. These executables are attached to GitHub releases when a new version tag is pushed.
-
-### Downloading Executables
-
-1. Go to the [Releases](https://github.com/yourusername/loopspot/releases) page
-2. Download the appropriate executable for your platform:
-   - `LoopSpot.exe` for Windows
-   - `LoopSpot` for Linux
-
-### Running the Executable
-
-#### Windows
-- Create a dedicated folder for LoopSpot (e.g., `C:\Program Files\LoopSpot`)
-- Place the `LoopSpot.exe` file in this folder
-- Simply double-click the `LoopSpot.exe` file to run the application
-- The application will automatically create a `data` folder next to the executable to store your settings and saved loops
-
-#### Linux
-- Create a dedicated folder for LoopSpot (e.g., `~/LoopSpot` or `/opt/loopspot`)
-- Place the `LoopSpot` file in this folder
-- After downloading, make the file executable:
-  ```
-  chmod +x LoopSpot
-  ```
-- Then run it from the terminal:
-  ```
-  ./LoopSpot
-  ```
-- The application will automatically create a `data` folder next to the executable to store your settings and saved loops
-
-> **Important**: Always place the executable in a dedicated folder with write permissions. This ensures that your settings and saved loops persist between sessions. If you run the executable from a temporary folder or directly from your Downloads folder, your data may not be saved properly.
-
-## TODOs and Future Features
-
-Here are some planned improvements for LoopSpot:
-
-- Sharing saved loops between users
-- GUI version with waveform visualization
-- Keyboard shortcuts for faster loop creation
-- Playlist generation from favorite loops
-
 ## Contributing
 
-Contributions to LoopSpot are welcome! If you have ideas for improvements or new features, feel free to:
-
+Contributions are welcome! Feel free to:
 1. Fork the repository
-2. Create a feature branch
+2. Create a branch
 3. Submit a pull request
 
-You can also open an issue to report bugs or suggest enhancements. 
+## License
+
+[MIT License](LICENSE)
+
+## Contact
+
+For questions, support or bugs, please open an issue in the GitHub repository.
